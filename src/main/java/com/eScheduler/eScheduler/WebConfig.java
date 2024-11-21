@@ -10,10 +10,10 @@ public class WebConfig implements WebMvcConfigurer {
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         // Dozvoli CORS za sve rute sa svih domena
-        registry.addMapping("/**")  // Dodaj ovo da dozvoliš CORS za sve endpoint-e
-                .allowedOrigins("http://localhost:4200")  // Dozvoli samo za Angular aplikaciju
-                .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")  // Definiši metode
+        registry.addMapping("/**")  //CORS za sve endpoint-e
+                .allowedOrigins("http://localhost:4200")  // samo Moja Angular aplikacija
+                .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
                 .allowedHeaders("*")  // Dozvoli sve zaglavlja
-                .allowCredentials(true);  // Dozvoli korišćenje kolačića ili drugih kredencijala
+                .allowCredentials(true);
     }
 }
