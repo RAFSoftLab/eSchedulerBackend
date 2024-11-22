@@ -6,10 +6,7 @@ import com.eScheduler.eScheduler.services.UserLoginService;
 import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping(path = "/api/users/information")
@@ -22,13 +19,13 @@ public class UserLoginController {
         this.userLoginService = userLoginService;
     }
 
-    @GetMapping
-    public ResponseEntity<ResponseDTO<UserLogin>> getUserByEmail(@RequestParam String email){
+    @PostMapping
+    public ResponseEntity<ResponseDTO<UserLogin>> getUserByEmail(@RequestBody UserLogin credentials){
         try{
-            UserLogin userLogin = userLoginService.getUserByEmail(email);
+            UserLogin userLogin = userLoginService.getUserByCredentials(credentials.getEmail(), credentials.getPassword());
             return ResponseEntity.ok(new ResponseDTO<>("User found", true, userLogin));
         }catch (IllegalArgumentException e){
-            return ResponseEntity.ok(new ResponseDTO<>("User not found", false, null));
+            return ResponseEntity.ok(new ResponseDTO<>("Password or Email is incorrect!", false, null));
         }
     }
 }

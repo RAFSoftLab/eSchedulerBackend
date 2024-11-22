@@ -14,7 +14,8 @@ public class UserLoginService {
         this.userLoginRepository = userLoginRepository;
     }
 
-    public UserLogin getUserByEmail(String email){
-        return userLoginRepository.findByEmail(email).orElseThrow(()-> new IllegalArgumentException("Email not found"));
+    public UserLogin getUserByCredentials(String email,String password){
+        return userLoginRepository.findByCredentials(email,password).orElseThrow(()-> new IllegalArgumentException("Password or Email is incorrect"));
+
     }
 }

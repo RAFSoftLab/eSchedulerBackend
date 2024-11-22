@@ -21,6 +21,10 @@ public class Teacher {
     @Column(name = "zvanje")
     private String title;
 
+    @OneToOne
+    @JoinColumn(name = "email", referencedColumnName = "email")
+    private UserLogin userLogin;
+
     public Long getId() {
         return id;
     }

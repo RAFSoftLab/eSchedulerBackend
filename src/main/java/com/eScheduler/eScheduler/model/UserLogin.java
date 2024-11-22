@@ -25,6 +25,9 @@ public class UserLogin {
     @Column(name = "lozinka")
     private String password;
 
+    @OneToOne(mappedBy = "userLogin", cascade = CascadeType.ALL)
+    private Teacher teacher;
+
     public Long getId() {
         return id;
     }
