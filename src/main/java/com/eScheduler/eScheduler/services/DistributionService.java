@@ -2,7 +2,6 @@ package com.eScheduler.eScheduler.services;
 
 
 import com.eScheduler.eScheduler.model.Distribution;
-import com.eScheduler.eScheduler.model.Subject;
 import com.eScheduler.eScheduler.repositories.DistributionRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +21,7 @@ public class DistributionService {
     public List<Distribution> getAllDistributions() {
         return distributionRepository.findAll();
     }
+
 
     public void addNewDistribution(Distribution distribution){
         if(distributionRepository.findById(distribution.getId()).isEmpty()){

@@ -2,9 +2,11 @@ package com.eScheduler.eScheduler.model;
 
 
 import jakarta.persistence.*;
+import lombok.Data;
 
 @Entity
 @Table(name = "nastavnik")
+@Data
 public class Teacher {
     @Id
     @SequenceGenerator(name = "teacher_sequence",
@@ -25,35 +27,4 @@ public class Teacher {
     @JoinColumn(name = "email", referencedColumnName = "email")
     private UserLogin userLogin;
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getFirstName() {
-        return firstName;
-    }
-
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-    }
-
-    public String getLastName() {
-        return lastName;
-    }
-
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
 }
