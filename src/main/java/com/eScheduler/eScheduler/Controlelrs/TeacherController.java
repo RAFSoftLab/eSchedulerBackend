@@ -34,9 +34,8 @@ public class TeacherController {
             teacherService.deleteTeacher(id);
         }
     }
-    @PutMapping(path = {"{teacherId}"})
-    public void updateTeacher(@PathVariable ("teacherId") Long id,
-                              @RequestParam (required = false) String firstName ) {
-        teacherService.updateTeacher(id,firstName);
+    @PutMapping()
+    public void updateTeacher(@RequestBody Teacher teacher){
+        teacherService.updateTeacher(teacher);
     }
 }

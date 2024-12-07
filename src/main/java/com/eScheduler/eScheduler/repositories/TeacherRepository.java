@@ -12,5 +12,4 @@ public interface TeacherRepository extends JpaRepository<Teacher, Long> {
 
     @Query("SELECT t FROM Teacher t WHERE t.firstName = ?1")
     Optional<Teacher> findByName(String name);
-
 }

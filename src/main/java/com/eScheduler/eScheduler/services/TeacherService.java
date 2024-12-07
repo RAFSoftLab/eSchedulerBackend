@@ -33,7 +33,7 @@ public class TeacherService {
     public void addNewTeacher(Teacher teacher) {
          Optional<Teacher> teacherByName = teacherRepository.findByName(teacher.getFirstName());
          if (teacherByName.isPresent()) {
-             throw new IllegalArgumentException("Teacher already exists");
+             throw new IllegalArgumentException("Teacher already exists" + teacher.getFirstName());
          }else{
              System.out.println("creating teacher");
              teacherRepository.save(teacher);
@@ -45,12 +45,16 @@ public class TeacherService {
     }
 
     @Transactional
-    public void updateTeacher(Long id,String firstName) {
-        Teacher teacher = teacherRepository.findById(id).orElseThrow(()->new IllegalArgumentException("Teacher not found"));
-        System.out.println(teacher.getFirstName());
-        System.out.println(firstName);
-        if (firstName != null && !firstName.isEmpty()){
-            teacher.setFirstName(firstName);
+    public void updateTeacher(Teacher teacher) {
+        Teacher oldTeacher = teacherRepository.findById(teacher.getId()).orElseThrow(()->new IllegalArgumentException("Teacher not found"));
+        if(oldTeacher.getFirstName().equals(teacher.getFirstName()) || !teacher.getFirstName().isEmpty()){
+            oldTeacher.setFirstName(teacher.getFirstName());
+        }
+        if(oldTeacher.getLastName().equals(teacher.getLastName()) || !teacher.getLastName().isEmpty()){
+            oldTeacher.setLastName(teacher.getLastName());
+        }
+        if(oldTeacher.getTitle().equals(teacher.getTitle()) || !teacher.getTitle().isEmpty()){
+            oldTeacher.setTitle(teacher.getTitle());
         }
     }
 }
