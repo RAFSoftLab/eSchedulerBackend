@@ -13,11 +13,13 @@ public class Distribution {
     @Column(name = "id_raspodela")
     private Long id;
 
-    @Column(name = "id_nastavnik")
-    private Long teacherId;
+    @ManyToOne
+    @JoinColumn(name = "id_nastavnik", referencedColumnName = "idnastavnik")
+    private Teacher teacher;
 
-    @Column(name = "id_predmet")
-    private Long subjectId;
+    @ManyToOne
+    @JoinColumn(name = "id_predmet", referencedColumnName = "idpredmet")
+    private Subject subject;
 
     @Column(name = "vrsta_casa")
     private String classType;

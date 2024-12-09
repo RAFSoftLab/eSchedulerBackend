@@ -1,8 +1,11 @@
 package com.eScheduler.eScheduler.controllers;
 
+import com.eScheduler.eScheduler.responses.customDTOClasses.DistributionDTO;
 import com.eScheduler.eScheduler.services.DistributionService;
 import com.eScheduler.eScheduler.model.Distribution;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -18,23 +21,26 @@ public class DistributionController {
     }
 
     @GetMapping
-    public List<Distribution> getDistributions() {
-        return distributionService.getAllDistributions();
+    public ResponseEntity<List<DistributionDTO>> getDistributions() {
+        List<DistributionDTO> distributions = distributionService.getAllDistributions();
+        return ResponseEntity.status(HttpStatus.OK).body(distributions);
     }
 
     @PostMapping
-    public void createDistribution(@RequestBody Distribution distribution){
-        distributionService.addNewDistribution(distribution);
+    public ResponseEntity<DistributionDTO> createDistribution(@RequestBody Distribution distribution){
+        DistributionDTO savedDistribution = distributionService.addNewDistribution(distribution);
+        return ResponseEntity.status(HttpStatus.CREATED).body(savedDistribution);
     }
 
     @DeleteMapping(path = "{distributionId}")
-    public void deleteDitributionById(@PathVariable("distributionId")Long id){
+    public ResponseEntity<Void> deleteDistributionById(@PathVariable("distributionId")Long id){
         distributionService.deleteDistributionById(id);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
-    @PutMapping(path = "{distributionId}")
-    public void updateDistributionById(@PathVariable("distributionId") Long id,
-                                        @RequestParam String classType){
-        updateDistributionById(id,classType);
+    @PutMapping()
+    public ResponseEntity<DistributionDTO> updateDistribution(@RequestBody Distribution distribution){
+        DistributionDTO distributionDTO =distributionService.updateDistribution(distribution);
+        return ResponseEntity.status(HttpStatus.OK).body(distributionDTO);
     }
 }

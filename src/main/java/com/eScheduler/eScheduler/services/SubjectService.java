@@ -5,11 +5,13 @@ import com.eScheduler.eScheduler.exceptions.custom.NotFoundException;
 import com.eScheduler.eScheduler.exceptions.custom.ServerErrorException;
 import com.eScheduler.eScheduler.model.Subject;
 import com.eScheduler.eScheduler.repositories.SubjectRepository;
+import com.eScheduler.eScheduler.responses.customDTOClasses.SubjectDTO;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.lang.reflect.Field;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -21,13 +23,19 @@ public class SubjectService {
         this.subjectRepository = subjectRepository;
     }
 
-    public List<Subject> getSubjects() {
-        return subjectRepository.findAll();
+    public List<SubjectDTO> getSubjects() {
+        List<Subject> subjects = subjectRepository.findAll();
+        List<SubjectDTO> subjectDTOS = new ArrayList<>();
+        subjects.forEach(subject -> {
+            subjectDTOS.add(mapToSubjectDTO(subject));
+        });
+        return subjectDTOS;
     }
 
-    public Subject addNewSubject(Subject subject){
+    public SubjectDTO addNewSubject(Subject subject){
         if(subjectRepository.findById(subject.getId()).isEmpty() && subjectRepository.findByName(subject.getName()).isEmpty()){
-            return subjectRepository.save(subject);
+            subjectRepository.save(subject);
+            return mapToSubjectDTO(subject);
         }else{
             throw new ConflictException("Predmet sa tim imenom vec postoji");
         }
@@ -39,7 +47,7 @@ public class SubjectService {
     }
 
     @Transactional
-    public Subject updateSubject(Subject subject) {
+    public SubjectDTO updateSubject(Subject subject) {
         Subject oldSubject = subjectRepository.findById(subject.getId())
                 .orElseThrow(() -> new NotFoundException("Predmet nije pronadjen"));
 
@@ -56,6 +64,13 @@ public class SubjectService {
                 throw new ServerErrorException("Greska prilikom azuriranja predmeta");
             }
         }
-        return oldSubject;
+        return mapToSubjectDTO(oldSubject);
+    }
+
+    public SubjectDTO mapToSubjectDTO(Subject subject){
+    return new SubjectDTO(subject.getId(), subject.getName(),
+            subject.getStudyProgram(), subject.getSemester(), subject.getLectureHours(),
+            subject.getExerciseHours(), subject.getPracticumHours(), subject.getMandatory(),
+            subject.getLectureSessions(), subject.getExerciseSessions());
     }
 }

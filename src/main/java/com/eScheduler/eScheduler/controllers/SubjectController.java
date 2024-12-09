@@ -2,6 +2,7 @@ package com.eScheduler.eScheduler.controllers;
 
 
 import com.eScheduler.eScheduler.model.Subject;
+import com.eScheduler.eScheduler.responses.customDTOClasses.SubjectDTO;
 import com.eScheduler.eScheduler.services.SubjectService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -21,14 +22,14 @@ public class SubjectController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Subject>> getAllSubjects() {
-        List<Subject> subjects = subjectService.getSubjects();
+    public ResponseEntity<List<SubjectDTO>> getAllSubjects() {
+        List<SubjectDTO> subjects = subjectService.getSubjects();
         return ResponseEntity.status(HttpStatus.OK).body(subjects);
     }
 
     @PostMapping
-    public ResponseEntity<Subject> createSubject(@RequestBody Subject subject){
-        Subject savedSubject = subjectService.addNewSubject(subject);
+    public ResponseEntity<SubjectDTO> createSubject(@RequestBody Subject subject){
+        SubjectDTO savedSubject = subjectService.addNewSubject(subject);
         return ResponseEntity.status(HttpStatus.CREATED).body(savedSubject);
     }
 
@@ -39,8 +40,8 @@ public class SubjectController {
     }
 
     @PutMapping()
-    public ResponseEntity<Subject> updateSubjectById(@RequestBody Subject subject){
-        Subject updatedSubject = subjectService.updateSubject(subject);
+    public ResponseEntity<SubjectDTO> updateSubjectById(@RequestBody Subject subject){
+        SubjectDTO updatedSubject = subjectService.updateSubject(subject);
         return ResponseEntity.status(HttpStatus.OK).body(updatedSubject);
     }
 }

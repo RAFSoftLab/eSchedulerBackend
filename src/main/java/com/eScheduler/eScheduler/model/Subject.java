@@ -2,6 +2,8 @@ package com.eScheduler.eScheduler.model;
 import jakarta.persistence.*;
 import lombok.Data;
 
+import java.util.List;
+
 @Entity
 @Table(name = "predmet")
 @Data
@@ -38,4 +40,6 @@ public class Subject {
     @Column(name = "broj_termina_vezbe")
     private Integer exerciseSessions;
 
+    @OneToMany(mappedBy = "subject", cascade = CascadeType.ALL)
+    private List<Distribution> distributions;
 }
