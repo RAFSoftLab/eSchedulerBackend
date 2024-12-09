@@ -9,11 +9,7 @@ import lombok.Data;
 @Data
 public class UserLogin {
     @Id
-    @SequenceGenerator(name = "userLogin_sequence",
-            sequenceName = "userLogin_sequence",
-            allocationSize = 10)
-    @GeneratedValue(strategy = GenerationType.SEQUENCE,
-            generator = "userLogin_sequence")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "idkorisnik")
     private Long id;
 

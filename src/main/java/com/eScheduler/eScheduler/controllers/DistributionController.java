@@ -1,4 +1,4 @@
-package com.eScheduler.eScheduler.Controlelrs;
+package com.eScheduler.eScheduler.controllers;
 
 import com.eScheduler.eScheduler.services.DistributionService;
 import com.eScheduler.eScheduler.model.Distribution;

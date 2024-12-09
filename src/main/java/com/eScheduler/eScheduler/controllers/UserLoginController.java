@@ -1,9 +1,8 @@
-package com.eScheduler.eScheduler.Controlelrs;
+package com.eScheduler.eScheduler.controllers;
 
 import com.eScheduler.eScheduler.model.UserLogin;
 import com.eScheduler.eScheduler.responses.ResponseDTO;
 import com.eScheduler.eScheduler.services.UserLoginService;
-import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

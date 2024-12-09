@@ -1,11 +1,16 @@
 package com.eScheduler.eScheduler.services;
 
+import com.eScheduler.eScheduler.exceptions.custom.ConflictException;
+import com.eScheduler.eScheduler.exceptions.custom.NotFoundException;
+import com.eScheduler.eScheduler.exceptions.custom.ServerErrorException;
+import com.eScheduler.eScheduler.model.Subject;
 import com.eScheduler.eScheduler.model.Teacher;
 import com.eScheduler.eScheduler.repositories.TeacherRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.lang.reflect.Field;
 import java.util.List;
 import java.util.Optional;
 
@@ -22,39 +27,39 @@ public class TeacherService {
       return teacherRepository.findAll();
     }
 
-    public Optional<Teacher> getTeacher(Long id) {
-            Optional<Teacher> teacherById = teacherRepository.findById(id);
-            if (!teacherById.isPresent()) {
-                throw new IllegalArgumentException("Teacher not found");
-            }
-            else return teacherById;
-    }
+    public Teacher addNewTeacher(Teacher teacher) {
 
-    public void addNewTeacher(Teacher teacher) {
-         Optional<Teacher> teacherByName = teacherRepository.findByName(teacher.getFirstName());
-         if (teacherByName.isPresent()) {
-             throw new IllegalArgumentException("Teacher already exists" + teacher.getFirstName());
+         if (teacherRepository.findByName(teacher.getFirstName()).isPresent()) {
+             throw new ConflictException("Profesor već postoji");
          }else{
-             System.out.println("creating teacher");
-             teacherRepository.save(teacher);
+             return teacherRepository.save(teacher);
          }
     }
 
-    public void deleteTeacher(Long id){
+    public void deleteTeacherById(Long id){
+        teacherRepository.findById(id).orElseThrow(()->new NotFoundException("Profesor nije pronađen"));
         teacherRepository.deleteById(id);
     }
 
     @Transactional
-    public void updateTeacher(Teacher teacher) {
-        Teacher oldTeacher = teacherRepository.findById(teacher.getId()).orElseThrow(()->new IllegalArgumentException("Teacher not found"));
-        if(oldTeacher.getFirstName().equals(teacher.getFirstName()) || !teacher.getFirstName().isEmpty()){
-            oldTeacher.setFirstName(teacher.getFirstName());
+    public Teacher updateTeacher(Teacher teacher) {
+        Teacher oldTeacher = teacherRepository.findById(teacher.getId())
+                .orElseThrow(()->new NotFoundException("Profesor nije pronađen"));
+
+        for (Field field : Teacher.class.getDeclaredFields()) {
+            try {
+                field.setAccessible(true);
+                Object newValue = field.get(teacher);
+                Object oldValue = field.get(oldTeacher);
+
+                if (newValue != null && !newValue.equals(oldValue)) {
+                    field.set(oldTeacher, newValue);
+                }
+            } catch (Exception e) {
+                throw new ServerErrorException("Greska prilikom ažuriranja profesora");
+            }
         }
-        if(oldTeacher.getLastName().equals(teacher.getLastName()) || !teacher.getLastName().isEmpty()){
-            oldTeacher.setLastName(teacher.getLastName());
-        }
-        if(oldTeacher.getTitle().equals(teacher.getTitle()) || !teacher.getTitle().isEmpty()){
-            oldTeacher.setTitle(teacher.getTitle());
-        }
+        return oldTeacher;
+
     }
 }
