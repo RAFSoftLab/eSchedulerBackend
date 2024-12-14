@@ -1,5 +1,6 @@
 package com.eScheduler.eScheduler.controllers;
 
+import com.eScheduler.eScheduler.requests.DistributionRequestDto;
 import com.eScheduler.eScheduler.responses.customDTOClasses.DistributionDTO;
 import com.eScheduler.eScheduler.services.DistributionService;
 import com.eScheduler.eScheduler.model.Distribution;
@@ -27,7 +28,7 @@ public class DistributionController {
     }
 
     @PostMapping
-    public ResponseEntity<DistributionDTO> createDistribution(@RequestBody Distribution distribution){
+    public ResponseEntity<DistributionDTO> createDistribution(@RequestBody DistributionRequestDto distribution){
         DistributionDTO savedDistribution = distributionService.addNewDistribution(distribution);
         return ResponseEntity.status(HttpStatus.CREATED).body(savedDistribution);
     }
@@ -37,9 +38,9 @@ public class DistributionController {
         distributionService.deleteDistributionById(id);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
-
+    
     @PutMapping()
-    public ResponseEntity<DistributionDTO> updateDistribution(@RequestBody Distribution distribution){
+    public ResponseEntity<DistributionDTO> updateDistribution(@RequestBody DistributionRequestDto distribution){
         DistributionDTO distributionDTO =distributionService.updateDistribution(distribution);
         return ResponseEntity.status(HttpStatus.OK).body(distributionDTO);
     }

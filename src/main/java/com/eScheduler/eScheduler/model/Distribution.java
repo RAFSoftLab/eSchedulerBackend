@@ -2,11 +2,15 @@ package com.eScheduler.eScheduler.model;
 
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "raspodela")
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class Distribution {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
