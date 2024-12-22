@@ -7,6 +7,7 @@ import com.eScheduler.exceptions.custom.ServerErrorException;
 import com.eScheduler.model.Distribution;
 import com.eScheduler.model.Subject;
 import com.eScheduler.model.Teacher;
+import com.eScheduler.model.UserLogin;
 import com.eScheduler.repositories.DistributionRepository;
 import com.eScheduler.requests.DistributionRequestDTO;
 import com.eScheduler.responses.customDTOClasses.DistributionDTO;
@@ -45,9 +46,10 @@ public class DistributionService {
     public DistributionDTO addNewDistribution(DistributionRequestDTO distribution){
         Subject subject = distributionRepository.findBySubjectName(distribution.getSubject());
         List<Distribution> distributionsWithSameSubject = distributionRepository.findBySubject(subject,distribution.getClassType());
-        String fullName = distribution.getTeacher();
-        String firstName = fullName.split(" ")[0];
-        Teacher teacher = distributionRepository.findByTeacherName(firstName);
+
+        UserLogin user = distributionRepository.findByUserEmail(distribution.getTeacher());
+        Teacher teacher = user.getTeacher();
+
         if (distributionsWithSameSubject.isEmpty() || subject == null || teacher == null) {
             throw new ConflictException("Raspodela sa tim predmetom ili nastavnikom ne postoji");
         }else{
@@ -85,9 +87,11 @@ public class DistributionService {
 
         Subject subject = distributionRepository.findBySubjectName(distribution.getSubject());
         List<Distribution> distributionsWithSameSubject = distributionRepository.findBySubject(subject,distribution.getClassType());
-        String fullName = distribution.getTeacher();
-        String firstName = fullName.split(" ")[0];
-        Teacher teacher = distributionRepository.findByTeacherName(firstName);
+
+        System.out.println(distribution.getTeacher());
+        UserLogin user = distributionRepository.findByUserEmail(distribution.getTeacher());
+        System.out.println(user.getEmail());
+        Teacher teacher = user.getTeacher();
 
         if (distributionsWithSameSubject.isEmpty() || subject == null || teacher == null) {
             throw new ConflictException("Raspodela sa tim predmetom ili nastavnikom ne postoji");

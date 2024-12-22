@@ -3,6 +3,7 @@ package com.eScheduler.repositories;
 import com.eScheduler.model.Distribution;
 import com.eScheduler.model.Subject;
 import com.eScheduler.model.Teacher;
+import com.eScheduler.model.UserLogin;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
@@ -18,6 +19,6 @@ public interface DistributionRepository extends JpaRepository<Distribution, Long
     @Query("SELECT s FROM Subject s WHERE s.name = ?1 ")
     Subject findBySubjectName(String name);
 
-    @Query("SELECT t FROM Teacher t WHERE t.firstName = ?1 ")
-    Teacher findByTeacherName(String name);
+    @Query("SELECT u FROM UserLogin u WHERE u.email = ?1 ")
+    UserLogin findByUserEmail(String email);
 }
