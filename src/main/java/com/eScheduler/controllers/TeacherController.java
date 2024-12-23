@@ -44,4 +44,17 @@ public class TeacherController {
         TeacherDTO updatedTeacher = teacherService.updateTeacher(teacher);
         return ResponseEntity.status(HttpStatus.OK).body(updatedTeacher);
     }
+
+    @GetMapping("/professors")
+    public ResponseEntity<List<TeacherDTO>> getProfessors() {
+        List<TeacherDTO> professors = teacherService.getProfessors(); // Pretpostavljamo da ova metoda filtrira profesore
+        return ResponseEntity.status(HttpStatus.OK).body(professors);
+    }
+
+    @GetMapping("/assistants")
+    public ResponseEntity<List<TeacherDTO>> getAssistants() {
+        List<TeacherDTO> assistants = teacherService.getAssistants(); // Pretpostavljamo da ova metoda filtrira saradnike
+        return ResponseEntity.status(HttpStatus.OK).body(assistants);
+    }
+
 }

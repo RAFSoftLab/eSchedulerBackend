@@ -48,9 +48,8 @@ public class DistributionService {
         List<Distribution> distributionsWithSameSubject = distributionRepository.findBySubject(subject,distribution.getClassType());
 
         UserLogin user = distributionRepository.findByUserEmail(distribution.getTeacher());
-        Teacher teacher = user.getTeacher();
 
-        if (distributionsWithSameSubject.isEmpty() || subject == null || teacher == null) {
+        if (subject == null || user == null) {
             throw new ConflictException("Raspodela sa tim predmetom ili nastavnikom ne postoji");
         }else{
             AtomicInteger sum = new AtomicInteger();
@@ -64,14 +63,12 @@ public class DistributionService {
                 throw new ConflictException("Prekoracen broj casova za ovaj tip nastave");
             }
         }
+        Teacher teacher = user.getTeacher();
         Distribution newDistribution = new Distribution(0L,teacher,subject,distribution.getClassType(),distribution.getSessionCount());
 
-        if(distributionRepository.findById(newDistribution.getId()).isEmpty()){
-            distributionRepository.save(newDistribution);
-            return mapToDistributionDTO(newDistribution);
-        }else{
-            throw new ConflictException("Raspodela postoji");
-        }
+        distributionRepository.save(newDistribution);
+        return mapToDistributionDTO(newDistribution);
+
     }
 
     public void deleteDistributionById(Long id){
@@ -93,7 +90,7 @@ public class DistributionService {
         System.out.println(user.getEmail());
         Teacher teacher = user.getTeacher();
 
-        if (distributionsWithSameSubject.isEmpty() || subject == null || teacher == null) {
+        if (subject == null || teacher == null) {
             throw new ConflictException("Raspodela sa tim predmetom ili nastavnikom ne postoji");
         }else{
             AtomicInteger sum = new AtomicInteger();

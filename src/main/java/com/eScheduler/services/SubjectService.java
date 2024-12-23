@@ -33,7 +33,7 @@ public class SubjectService {
     }
 
     public SubjectDTO addNewSubject(Subject subject){
-        if(subjectRepository.findById(subject.getId()).isEmpty() && subjectRepository.findByName(subject.getName()).isEmpty()){
+        if(subjectRepository.findByName(subject.getName()).isEmpty()){
             subjectRepository.save(subject);
             return mapToSubjectDTO(subject);
         }else{

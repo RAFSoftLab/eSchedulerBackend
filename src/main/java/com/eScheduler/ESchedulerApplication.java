@@ -12,10 +12,4 @@ public class ESchedulerApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(ESchedulerApplication.class, args);
 	}
-
-	@GetMapping
-	public String hello(){
-		return "Hello World";
-	}
-
 }

@@ -41,6 +41,25 @@ public class TeacherService {
         return teacherDTOS;
     }
 
+    public List<TeacherDTO> getProfessors() {
+        List<Teacher> teachers = teacherRepository.findByType("nastavnik");
+        List<TeacherDTO> teacherDTOS = new ArrayList<>();
+        teachers.forEach(teacher -> {
+            teacherDTOS.add(mapToTeacherDTO(teacher));
+        });
+        return teacherDTOS;
+
+    }
+
+    public List<TeacherDTO> getAssistants() {
+        List<Teacher> assistants = teacherRepository.findByType("saradnik");
+        List<TeacherDTO> teacherDTOS = new ArrayList<>();
+        assistants.forEach(assistant -> {
+            teacherDTOS.add(mapToTeacherDTO(assistant));
+        });
+        return teacherDTOS;
+    }
+
     public TeacherDTO addNewTeacher(TeacherRequestDTO teacher) {
         if (teacherRepository.findByEmail(teacher.getEmail()).isPresent()) {
              throw new ConflictException("Profesor sa tim mailom već postoji");
@@ -99,4 +118,5 @@ public class TeacherService {
     public TeacherDTO mapRequestTeacherDTOToTeacherDTO(TeacherRequestDTO teacher){
         return new TeacherDTO(teacher.getId(), teacher.getEmail(), teacher.getFirstName(), teacher.getLastName(), teacher.getTitle(), teacher.isAdmin());
     }
+
 }
