@@ -47,9 +47,8 @@ public class DistributionService {
         Subject subject = distributionRepository.findBySubjectName(distribution.getSubject());
         List<Distribution> distributionsWithSameSubject = distributionRepository.findBySubject(subject,distribution.getClassType());
 
-        UserLogin user = distributionRepository.findByUserEmail(distribution.getTeacher());
-
-        if (subject == null || user == null) {
+        Teacher teacher = distributionRepository.findByTeacherEmail(distribution.getTeacher());
+        if (subject == null || teacher == null) {
             throw new ConflictException("Raspodela sa tim predmetom ili nastavnikom ne postoji");
         }else{
             AtomicInteger sum = new AtomicInteger();
@@ -63,7 +62,6 @@ public class DistributionService {
                 throw new ConflictException("Prekoracen broj casova za ovaj tip nastave");
             }
         }
-        Teacher teacher = user.getTeacher();
         Distribution newDistribution = new Distribution(0L,teacher,subject,distribution.getClassType(),distribution.getSessionCount());
 
         distributionRepository.save(newDistribution);
@@ -85,10 +83,7 @@ public class DistributionService {
         Subject subject = distributionRepository.findBySubjectName(distribution.getSubject());
         List<Distribution> distributionsWithSameSubject = distributionRepository.findBySubject(subject,distribution.getClassType());
 
-        System.out.println(distribution.getTeacher());
-        UserLogin user = distributionRepository.findByUserEmail(distribution.getTeacher());
-        System.out.println(user.getEmail());
-        Teacher teacher = user.getTeacher();
+        Teacher teacher = distributionRepository.findByTeacherEmail(distribution.getTeacher());
 
         if (subject == null || teacher == null) {
             throw new ConflictException("Raspodela sa tim predmetom ili nastavnikom ne postoji");

@@ -7,8 +7,6 @@ import com.eScheduler.model.Distribution;
 import com.eScheduler.model.Subject;
 import com.eScheduler.model.Teacher;
 import com.eScheduler.repositories.DistributionRepository;
-import com.eScheduler.repositories.SubjectRepository;
-import com.eScheduler.repositories.TeacherRepository;
 import com.eScheduler.requests.DistributionRequestDTO;
 import com.eScheduler.responses.customDTOClasses.DistributionDTO;
 import org.junit.jupiter.api.BeforeEach;

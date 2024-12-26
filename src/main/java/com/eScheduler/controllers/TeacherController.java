@@ -47,13 +47,13 @@ public class TeacherController {
 
     @GetMapping("/professors")
     public ResponseEntity<List<TeacherDTO>> getProfessors() {
-        List<TeacherDTO> professors = teacherService.getProfessors(); // Pretpostavljamo da ova metoda filtrira profesore
+        List<TeacherDTO> professors = teacherService.getProfessors();
         return ResponseEntity.status(HttpStatus.OK).body(professors);
     }
 
     @GetMapping("/assistants")
     public ResponseEntity<List<TeacherDTO>> getAssistants() {
-        List<TeacherDTO> assistants = teacherService.getAssistants(); // Pretpostavljamo da ova metoda filtrira saradnike
+        List<TeacherDTO> assistants = teacherService.getAssistants();
         return ResponseEntity.status(HttpStatus.OK).body(assistants);
     }
 

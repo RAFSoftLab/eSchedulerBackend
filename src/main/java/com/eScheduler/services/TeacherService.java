@@ -63,31 +63,34 @@ public class TeacherService {
     public TeacherDTO addNewTeacher(TeacherRequestDTO teacher) {
         if (teacherRepository.findByEmail(teacher.getEmail()).isPresent()) {
              throw new ConflictException("Profesor sa tim mailom već postoji");
-         }else{
-                Teacher newTeacher = new Teacher();
-                newTeacher.setFirstName(teacher.getFirstName());
-                newTeacher.setLastName(teacher.getLastName());
-                newTeacher.setTitle(teacher.getTitle());
+        }else{
+            Teacher newTeacher = new Teacher();
+            newTeacher.setFirstName(teacher.getFirstName());
+            newTeacher.setLastName(teacher.getLastName());
+            newTeacher.setTitle(teacher.getTitle());
 
 
-                UserLogin userLogin = new UserLogin();
-                userLogin.setEmail(teacher.getEmail());
-                String hashedPassword = passwordEncoder.encode("password");
-                userLogin.setPassword(hashedPassword);
-                userLogin.setAdmin(teacher.isAdmin());
-                userLoginRepository.save(userLogin);
+            UserLogin userLogin = new UserLogin();
+            userLogin.setEmail(teacher.getEmail());
+            String hashedPassword = passwordEncoder.encode("password");
+            userLogin.setPassword(hashedPassword);
+            userLogin.setAdmin(teacher.isAdmin());
+            userLoginRepository.save(userLogin);
 
-                newTeacher.setUserLogin(userLogin);
-
-             teacherRepository.save(newTeacher);
-             return mapRequestTeacherDTOToTeacherDTO(teacher);
-         }
+            newTeacher.setUserLogin(userLogin);
+            teacherRepository.save(newTeacher);
+            teacher.setId(newTeacher.getId());
+            return mapRequestTeacherDTOToTeacherDTO(teacher);
+        }
     }
 
     public void deleteTeacherById(Long id){
         Teacher teacher =teacherRepository.findById(id)
                 .orElseThrow(()->new NotFoundException("Profesor nije pronađen"));
         userLoginRepository.deleteById(teacher.getUserLogin().getId());
+        if (teacherRepository.findById(id).isPresent()) {
+            teacherRepository.deleteById(id);
+        }
     }
 
     @Transactional
