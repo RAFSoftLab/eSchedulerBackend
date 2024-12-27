@@ -13,6 +13,7 @@ public class UserLogin {
     @Column(name = "idkorisnik")
     private Long id;
 
+    @Column(unique = true, nullable = false)
     private String email;
 
     @Column(name = "admin")
