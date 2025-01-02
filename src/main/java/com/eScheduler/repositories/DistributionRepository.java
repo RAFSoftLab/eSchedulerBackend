@@ -6,11 +6,12 @@ import com.eScheduler.model.Teacher;
 import com.eScheduler.model.UserLogin;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
-@Repository
+@RepositoryRestResource(exported = false)
 public interface DistributionRepository extends JpaRepository<Distribution, Long> {
 
     @Query("SELECT d FROM Distribution d WHERE d.subject = ?1 AND d.classType = ?2")
