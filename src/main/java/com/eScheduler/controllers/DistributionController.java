@@ -2,6 +2,7 @@ package com.eScheduler.controllers;
 
 import com.eScheduler.requests.DistributionRequestDTO;
 import com.eScheduler.responses.customDTOClasses.DistributionDTO;
+import com.eScheduler.responses.customDTOClasses.StandardUserDTO;
 import com.eScheduler.services.DistributionService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -53,5 +54,13 @@ public class DistributionController {
             @RequestBody @Parameter(description = "Updated distribution details") DistributionRequestDTO distribution){
         DistributionDTO distributionDTO =distributionService.updateDistribution(distribution);
         return ResponseEntity.status(HttpStatus.OK).body(distributionDTO);
+    }
+
+    @GetMapping(path = {"{teacherEmail}"})
+    @Operation(summary = "get distribution by teacher email", description = "Retrieve a list of all distribution by teacher email")
+    public ResponseEntity<List<StandardUserDTO>> getDistributionByTeacher(
+            @PathVariable("teacherEmail") @Parameter(description = "email of teacher that need to be returnes") String email ) {
+        List<StandardUserDTO> standardUserDTO = distributionService.getDistributionByTeacher(email);
+        return ResponseEntity.status(HttpStatus.OK).body(standardUserDTO);
     }
 }

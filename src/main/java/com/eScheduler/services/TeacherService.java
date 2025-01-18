@@ -72,8 +72,9 @@ public class TeacherService {
 
             UserLogin userLogin = new UserLogin();
             userLogin.setEmail(teacher.getEmail());
-            String hashedPassword = passwordEncoder.encode("password");
-            userLogin.setPassword(hashedPassword);
+//            String hashedPassword = passwordEncoder.encode("password");
+//            userLogin.setPassword(hashedPassword);
+            userLogin.setPassword("password");
             userLogin.setAdmin(teacher.isAdmin());
             userLoginRepository.save(userLogin);
 

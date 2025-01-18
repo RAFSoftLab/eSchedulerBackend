@@ -19,10 +19,10 @@ public class UserLoginController {
     }
 
     @PostMapping
-    public ResponseEntity<ResponseDTO<UserLogin>> getUserByEmail(@RequestBody UserLogin credentials){
+    public ResponseEntity<ResponseDTO<String>> getUserByEmail(@RequestBody UserLogin credentials){
         try{
             UserLogin userLogin = userLoginService.getUserByCredentials(credentials.getEmail(), credentials.getPassword());
-            return ResponseEntity.ok(new ResponseDTO<>("User found", true, userLogin));
+            return ResponseEntity.ok(new ResponseDTO<>("User found", true, userLogin.getEmail()));
         }catch (IllegalArgumentException e){
             return ResponseEntity.ok(new ResponseDTO<>("Password or Email is incorrect!", false, null));
         }

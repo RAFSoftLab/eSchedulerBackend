@@ -11,6 +11,7 @@ import com.eScheduler.model.UserLogin;
 import com.eScheduler.repositories.DistributionRepository;
 import com.eScheduler.requests.DistributionRequestDTO;
 import com.eScheduler.responses.customDTOClasses.DistributionDTO;
+import com.eScheduler.responses.customDTOClasses.StandardUserDTO;
 import com.eScheduler.responses.customDTOClasses.SubjectDTO;
 import com.eScheduler.responses.customDTOClasses.TeacherDTO;
 import jakarta.transaction.Transactional;
@@ -42,6 +43,18 @@ public class DistributionService {
         return distributionDTOS;
     }
 
+    public List<StandardUserDTO> getDistributionByTeacher(String email) {
+        List<Distribution> distributions = distributionRepository.getDistributionByTeacherEmail(email);
+        List<StandardUserDTO> standardUserDTOS = new ArrayList<>();
+        distributions.forEach(distribution -> {
+            standardUserDTOS.add(new StandardUserDTO(distribution.getTeacher().getFirstName(),distribution.getTeacher().getLastName(),
+                    distribution.getTeacher().getUserLogin().getEmail(),distribution.getSubject().getName(),
+                    distribution.getSubject().getStudyProgram(), distribution.getSubject().getSemester(),
+                    distribution.getSubject().getLectureHours(), distribution.getSubject().getExerciseHours(),
+                    distribution.getClassType(), distribution.getSessionCount()));
+        });
+        return standardUserDTOS;
+    }
 
     public DistributionDTO addNewDistribution(DistributionRequestDTO distribution){
         Subject subject = distributionRepository.findBySubjectName(distribution.getSubject());
