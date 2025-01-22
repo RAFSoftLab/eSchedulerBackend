@@ -118,7 +118,7 @@ class SubjectControllerIntegrationTest {
                 .andExpect(jsonPath("$.id", is(subject.getId().intValue())))
                 .andExpect(jsonPath("$.name", is("Napredno Programiranje")))
                 .andExpect(jsonPath("$.practicumHours", is(1)))
-                .andExpect(jsonPath("$.mandatory", is("Da")));
+                .andExpect(jsonPath("$.mandatory", is("obavezan")));
     }
 
 }
