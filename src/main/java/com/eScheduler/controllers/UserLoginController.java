@@ -18,13 +18,13 @@ public class UserLoginController {
         this.userLoginService = userLoginService;
     }
 
-    @PostMapping
-    public ResponseEntity<ResponseDTO<String>> getUserByEmail(@RequestBody UserLogin credentials){
-        try{
-            UserLogin userLogin = userLoginService.getUserByCredentials(credentials.getEmail(), credentials.getPassword());
-            return ResponseEntity.ok(new ResponseDTO<>("User found", true, userLogin.getEmail()));
-        }catch (IllegalArgumentException e){
-            return ResponseEntity.ok(new ResponseDTO<>("Password or Email is incorrect!", false, null));
-        }
-    }
+//    @PostMapping
+//    public ResponseEntity<ResponseDTO<String>> getUserByEmail(@RequestBody String email) {
+//        try{
+//            UserLogin userLogin = userLoginService.getUserByCredentials(email);
+//            return ResponseEntity.ok(new ResponseDTO<>("User found", true, userLogin.getEmail()));
+//        }catch (IllegalArgumentException e){
+//            return ResponseEntity.ok(new ResponseDTO<>("Password or Email is incorrect!", false, null));
+//        }
+//    }
 }

@@ -35,20 +35,29 @@ public class JwtUtil {
     public String extractUsername(String token) {
         return extractAllClaims(token).getSubject();
     }
+    public boolean extractIsAdmin(String token) {
+        Claims claims = extractAllClaims(token);
+        return claims.get("isAdmin", Boolean.class);
+    }
+
     public boolean isTokenExpired(String token){
         return extractAllClaims(token).getExpiration().before(new Date());
     }
 
-    public String generateToken(String username){
+    public String generateToken(String username, boolean isAdmin) {
         Map<String, Object> claims = new HashMap<>();
-        return Jwts.builder()
+        claims.put("isAdmin", isAdmin);
+        String token = Jwts.builder()
                 .setClaims(claims)
                 .setSubject(username)
                 .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 10))
+                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 10)) // 10 hours
                 .signWith(secretKey, SignatureAlgorithm.HS256)
                 .compact();
+        return token;
     }
+
+
     public boolean validateToken(String token, String username) {
         return (username.equals(extractUsername(token)) && !isTokenExpired(token));
     }

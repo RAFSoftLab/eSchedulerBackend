@@ -19,9 +19,9 @@ public class UserLoginService implements UserDetailsService {
         this.userLoginRepository = userLoginRepository;
     }
 
-    public UserLogin getUserByCredentials(String email,String password){
-        return userLoginRepository.findByCredentials(email,password).orElseThrow(()-> new IllegalArgumentException("Password or Email is incorrect"));
-
+    public boolean getUserByCredentials(String email){
+        UserLogin userLogin = userLoginRepository.findByEmail(email).orElseThrow(()-> new IllegalArgumentException("Email is incorrect"));
+        return userLogin.isAdmin();
     }
 
     @Override
