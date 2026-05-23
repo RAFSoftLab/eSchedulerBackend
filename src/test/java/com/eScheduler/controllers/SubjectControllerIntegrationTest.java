@@ -31,9 +31,31 @@ class SubjectControllerIntegrationTest {
 
     @BeforeEach
     void setUp() {
+        // Kreiramo prvi predmet
+        Subject matematika = new Subject();
+        matematika.setName("Matematika");
+        matematika.setStudyProgram("RN");
+        matematika.setSemester(1);
+        matematika.setLectureHours(3);
+        matematika.setExerciseHours(2);
+        matematika.setPracticumHours(1);
+        matematika.setMandatory("obavezan");
+        matematika.setLectureSessions(15);
+        matematika.setExerciseSessions(10);
+        subjectService.addNewSubject(matematika);
 
-            subjectService.addNewSubject(new Subject(null, "Matematika", "RN", 1, 3, 2, 1, "obavezan", 15, 10, null));
-            subjectService.addNewSubject(new Subject(null, "Programiranje", "RN", 2, 4, 2, 0, "izbroni", 16, 8, null));
+        // Kreiramo drugi predmet
+        Subject programiranje = new Subject();
+        programiranje.setName("Programiranje");
+        programiranje.setStudyProgram("RN");
+        programiranje.setSemester(2);
+        programiranje.setLectureHours(4);
+        programiranje.setExerciseHours(2);
+        programiranje.setPracticumHours(0);
+        programiranje.setMandatory("izborni");
+        programiranje.setLectureSessions(16);
+        programiranje.setExerciseSessions(8);
+        subjectService.addNewSubject(programiranje);
     }
 
     @Test
@@ -119,6 +141,60 @@ class SubjectControllerIntegrationTest {
                 .andExpect(jsonPath("$.name", is("Napredno Programiranje")))
                 .andExpect(jsonPath("$.practicumHours", is(1)))
                 .andExpect(jsonPath("$.mandatory", is("obavezan")));
+    }
+
+    // Testira kreiranje predmeta sa imenom koje već postoji, očekuje se status 409 Conflict
+    @Test
+    void createSubject_returnsConflict_whenSubjectAlreadyExists() throws Exception {
+        String subjectJson = """
+        {
+            "name": "Matematika",
+            "studyProgram": "RN",
+            "semester": 1,
+            "lectureHours": 3,
+            "exerciseHours": 2,
+            "practicumHours": 1,
+            "mandatory": "obavezan",
+            "lectureSessions": 15,
+            "exerciseSessions": 10
+        }
+        """;
+
+        mockMvc.perform(post("/api/subjects")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(subjectJson))
+                .andExpect(status().isConflict());
+    }
+
+
+    @Test
+    void updateSubject_returnsNotFound_whenSubjectDoesNotExist() throws Exception {
+        String subjectJson = """
+        {
+            "id": 999,
+            "name": "Nepostojeci predmet",
+            "studyProgram": "RN",
+            "semester": 1,
+            "lectureHours": 3,
+            "exerciseHours": 2,
+            "practicumHours": 1,
+            "mandatory": "obavezan",
+            "lectureSessions": 10,
+            "exerciseSessions": 5
+        }
+        """;
+
+        mockMvc.perform(put("/api/subjects")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(subjectJson))
+                .andExpect(status().isNotFound());
+    }
+
+    // Testira brisanje predmeta koji ne postoji, očekuje se status 404 Not Found
+    @Test
+    void deleteSubject_returnsNotFound_whenSubjectDoesNotExist() throws Exception {
+        mockMvc.perform(delete("/api/subjects/999"))
+                .andExpect(status().isNotFound());
     }
 
 }

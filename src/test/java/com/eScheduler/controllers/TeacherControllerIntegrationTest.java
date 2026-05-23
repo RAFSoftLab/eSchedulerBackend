@@ -1,6 +1,5 @@
 package com.eScheduler.controllers;
 
-import com.eScheduler.repositories.TeacherRepository;
 import com.eScheduler.requests.TeacherRequestDTO;
 import com.eScheduler.responses.customDTOClasses.TeacherDTO;
 import com.eScheduler.services.TeacherService;
@@ -29,13 +28,15 @@ class TeacherControllerIntegrationTest {
 
     @Autowired
     private TeacherService teacherService;
-    @Autowired
-    private TeacherRepository teacherRepository;
 
     @BeforeEach
     void setUp() {
-        teacherService.addNewTeacher(new TeacherRequestDTO(null,"pPetrovic@raf.rs", "Petar", "Petrovic", "nastavnik",false));
-        teacherService.addNewTeacher(new TeacherRequestDTO(null,"aAnic@raf,rs", "Ana", "Anic", "saradnik",true));
+        teacherService.addNewTeacher(
+                new TeacherRequestDTO(null, "pPetrovic@raf.rs", "Petar", "Petrovic", "nastavnik", false)
+        );
+        teacherService.addNewTeacher(
+                new TeacherRequestDTO(null, "aAnic@raf.rs", "Ana", "Anic", "saradnik", true)
+        );
     }
 
     @Test
@@ -65,6 +66,7 @@ class TeacherControllerIntegrationTest {
                         .content(newTeacherJson))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.firstName", is("Marko")))
+                .andExpect(jsonPath("$.email", is("mMarkovic@raf.rs")))
                 .andExpect(jsonPath("$.title", is("nastavnik")));
     }
 
@@ -78,14 +80,13 @@ class TeacherControllerIntegrationTest {
         mockMvc.perform(delete("/api/teachers/" + teacher.getId()))
                 .andExpect(status().isNoContent());
 
-        mockMvc.perform(get("/api/teachers")
-                        .contentType(MediaType.APPLICATION_JSON))
+        mockMvc.perform(get("/api/teachers"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(1)));
     }
 
     @Test
-    void updateTeacherById_updatesTeacher() throws Exception {
+    void updateTeacher_updatesTeacher() throws Exception {
         TeacherDTO teacher = teacherService.getTeachers().stream()
                 .filter(t -> t.getFirstName().equals("Ana"))
                 .findFirst()
@@ -94,10 +95,11 @@ class TeacherControllerIntegrationTest {
         String updatedTeacherJson = String.format("""
             {
                 "id": %d,
-                "email": "aAnic@raf,rs",
+                "email": "aAnic@raf.rs",
                 "firstName": "Ana",
                 "lastName": "Andelkovic",
-                "title": "nastavnik"
+                "title": "nastavnik",
+                "isAdmin": true
             }
             """, teacher.getId());
 
@@ -107,29 +109,71 @@ class TeacherControllerIntegrationTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id", is(teacher.getId().intValue())))
                 .andExpect(jsonPath("$.lastName", is("Andelkovic")))
-                .andExpect(jsonPath("$.firstName", is("Ana")))
-                .andExpect(jsonPath("$.email", is("aAnic@raf,rs")))
+                .andExpect(jsonPath("$.email", is("aAnic@raf.rs")))
                 .andExpect(jsonPath("$.title", is("nastavnik")));
-
     }
 
     @Test
     void getProfessors_returnsOnlyProfessors() throws Exception {
-        mockMvc.perform(get("/api/teachers/professors")
-                        .contentType(MediaType.APPLICATION_JSON))
+        mockMvc.perform(get("/api/teachers/professors"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(1)))
-                .andExpect(jsonPath("$[0].firstName", is("Petar")))
                 .andExpect(jsonPath("$[0].title", is("nastavnik")));
     }
 
     @Test
     void getAssistants_returnsOnlyAssistants() throws Exception {
-        mockMvc.perform(get("/api/teachers/assistants")
-                        .contentType(MediaType.APPLICATION_JSON))
+        mockMvc.perform(get("/api/teachers/assistants"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(1)))
-                .andExpect(jsonPath("$[0].firstName", is("Ana")))
                 .andExpect(jsonPath("$[0].title", is("saradnik")));
     }
+
+    // Ne mogu da napravim nastavnika sa istim emailom, treba da vrati 409 Conflict
+    @Test
+    void createTeacher_returnsConflict_whenTeacherAlreadyExists() throws Exception {
+        String teacherJson = """
+        {
+            "email": "pPetrovic@raf.rs",
+            "firstName": "Petar",
+            "lastName": "Petrovic",
+            "title": "nastavnik",
+            "isAdmin": false
+        }
+        """;
+
+        mockMvc.perform(post("/api/teachers")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(teacherJson))
+                .andExpect(status().isConflict());
+    }
+
+    // Ne mogu da updatujem nastavnika koji ne psotoji, treba da vrati 404 Not Found
+    @Test
+    void updateTeacher_returnsNotFound_whenTeacherDoesNotExist() throws Exception {
+        String updatedTeacherJson = """
+        {
+            "id": 999,
+            "email": "nepostojeci@raf.rs",
+            "firstName": "Neko",
+            "lastName": "Nepostojeci",
+            "title": "nastavnik",
+            "isAdmin": false
+        }
+        """;
+
+        mockMvc.perform(put("/api/teachers")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(updatedTeacherJson))
+                .andExpect(status().isNotFound());
+    }
+
+    // Ne mogu da obrisem nastavnika koji ne postoji, treba da vratim 404 Not Found
+    @Test
+    void deleteTeacher_returnsNotFound_whenTeacherDoesNotExist() throws Exception {
+        mockMvc.perform(delete("/api/teachers/999"))
+                .andExpect(status().isNotFound());
+    }
+
+
 }

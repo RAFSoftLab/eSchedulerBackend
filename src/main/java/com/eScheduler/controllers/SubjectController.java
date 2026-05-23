@@ -55,4 +55,11 @@ public class SubjectController {
         SubjectDTO updatedSubject = subjectService.updateSubject(subject);
         return ResponseEntity.status(HttpStatus.OK).body(updatedSubject);
     }
+
+
+    @GetMapping("/school-year/{id}")
+    public List<SubjectDTO> getSubjectsBySchoolYear(@PathVariable("id") Long id){
+        return subjectService.findBySchoolYearId(id);
+    }
+
 }

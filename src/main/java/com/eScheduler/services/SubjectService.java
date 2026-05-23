@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class SubjectService {
@@ -32,14 +33,23 @@ public class SubjectService {
         return subjectDTOS;
     }
 
-    public SubjectDTO addNewSubject(Subject subject){
-        if(subjectRepository.findByName(subject.getName()).isEmpty()){
-            subjectRepository.save(subject);
-            return mapToSubjectDTO(subject);
-        }else{
+    public SubjectDTO addNewSubject(Subject subject) {
+        if (subjectRepository.findByName(subject.getName()).isEmpty()) {
+            Subject savedSubject = subjectRepository.save(subject);
+            return mapToSubjectDTO(savedSubject);
+        } else {
             throw new ConflictException("Predmet sa tim imenom vec postoji");
         }
     }
+
+//    public SubjectDTO addNewSubject(Subject subject){
+//        if(subjectRepository.findByName(subject.getName()).isEmpty()){
+//            subjectRepository.save(subject);
+//            return mapToSubjectDTO(subject);
+//        }else{
+//            throw new ConflictException("Predmet sa tim imenom vec postoji");
+//        }
+//    }
 
     public void deleteSubjectById(Long id){
         subjectRepository.findById(id).orElseThrow(() -> new NotFoundException("Predmet nije pronadjen"));
@@ -72,5 +82,24 @@ public class SubjectService {
             subject.getStudyProgram(), subject.getSemester(), subject.getLectureHours(),
             subject.getExerciseHours(), subject.getPracticumHours(), subject.getMandatory(),
             subject.getLectureSessions(), subject.getExerciseSessions());
+    }
+
+
+    public List<SubjectDTO> findBySchoolYearId(Long id) {
+        List<Subject> subjects = subjectRepository.findBySchoolYearId(id);
+        return subjects.stream()
+                .map(s -> new SubjectDTO(
+                        s.getId(),
+                        s.getName(),
+                        s.getStudyProgram(),
+                        s.getSemester(),
+                        s.getLectureHours(),
+                        s.getExerciseHours(),
+                        s.getPracticumHours(),
+                        s.getMandatory(),
+                        s.getLectureSessions(),
+                        s.getExerciseSessions()
+                ))
+                .collect(Collectors.toList());
     }
 }
